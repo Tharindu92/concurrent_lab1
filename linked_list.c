@@ -1,8 +1,7 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 #include <time.h>
-#include <math.h>
 
 struct list_node **head_p;
 struct list_node
@@ -11,10 +10,10 @@ struct list_node
 	struct list_node* next;
 };
 
-int Member(int value, struct list_node* head_p);
-int Insert(int value, struct list_node** head_pp);
-int Delete(int value, struct list_node** head_pp);
-
+int member(int value, struct list_node* head_p);
+int insert(int value, struct list_node** head_pp);
+int delete(int value, struct list_node** head_pp);
+int i;
 int main(){
 	int size,num;
 	printf("Enter the size of linked list ");
@@ -22,18 +21,29 @@ int main(){
 	srand(time(NULL));
 	head_p = malloc(sizeof(struct list_node));
 	*head_p = malloc(sizeof(struct list_node));
-	for(int i=0; i < size; i++){
+	for(i=0; i < size; i++){
 		num = rand();
 		if(i==0){
 			(*head_p)->data = num;
 		}else{
-			Insert(num, head_p);
+			insert(num, head_p);
 		}
 	}
+  getLinkedList(*head_p);
 
 }
 
-int Member(int value, struct list_node* head_p)
+int getLinkedList(struct list_node* head_p)
+{
+  struct list_node* curr_p = head_p;
+
+  while(curr_p != NULL){
+    printf("%d ",curr_p->data);
+    curr_p = curr_p->next;
+  }
+}
+
+int member(int value, struct list_node* head_p)
 {
 	struct list_node* curr_p = head_p;
 
@@ -46,7 +56,7 @@ int Member(int value, struct list_node* head_p)
 		return 1;
 }
 
-int Insert(int value, struct list_node** head_pp)
+int insert(int value, struct list_node** head_pp)
 {
 	struct list_node* curr_p = *head_pp;
 	struct list_node* pred_p = NULL;
@@ -74,7 +84,7 @@ int Insert(int value, struct list_node** head_pp)
 
 }
 
-int Delete(int value, struct list_node** head_pp)
+int delete(int value, struct list_node** head_pp)
 {
 	struct list_node* curr_p = *head_pp;
 	struct list_node* pred_p = NULL;
@@ -99,10 +109,10 @@ int Delete(int value, struct list_node** head_pp)
 		return 0;
 	}
 }
-*/
+// */
 
 
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
 #include <math.h>
@@ -120,13 +130,14 @@ pthread_rwlock_t rwlock;
 pthread_mutex_t lock;
 int distance;
 int samples = 25;
+int i;
 
 struct node {
   int value;
   struct node *next;
 };
 
-int insert(int value,struct node **root){
+insert(int value,struct node **root){
     struct node* curr = *root;
     struct node* prev = NULL;
     struct node* temp;
@@ -158,8 +169,8 @@ int generateList(int n, struct node **root,int maxNumber){
   int result = 0;
   *root = malloc( sizeof(struct node) ); 
   (*root)->value = rand() % maxNumber+1;
-
-  for (int i = 0; i < n; ++i)
+  int i;
+  for (i = 0; i < n; ++i)
   {
     result = insert(rand() % maxNumber+1,root);
     if (result == 0)
@@ -210,7 +221,7 @@ double calculateSD(double timespent[])
 {
     double sum = 0.0, mean, standardDeviation = 0.0;
 
-    int i;
+    i;
 
     for(i=0; i<10; ++i)
     {
@@ -227,7 +238,7 @@ double calculateSD(double timespent[])
 
 double calculateSum(double timespent[]){
     double sum = 0.0;
-    for (int i = 0; i < samples; ++i)
+    for (i = 0; i < samples; ++i)
     {
       sum += timespent[i];
     }
@@ -379,7 +390,7 @@ int main()
     printf("A linked list has been generated with %d elements.\n",n);
 
     //Serial 
-    for (int i = 0; i < samples; ++i)
+    for (i = 0; i < samples; ++i)
     {
       begin = clock();
       operations();
@@ -393,7 +404,7 @@ int main()
 
 
     //parallel with mutex
-    for (int i = 0; i < samples; ++i)
+    for (i = 0; i < samples; ++i)
     {
       thread_handles = malloc(threadCount*sizeof(pthread_t));
       if (pthread_mutex_init(&lock, NULL) != 0)
@@ -422,7 +433,7 @@ int main()
     printf("Parallel Programme with mutex : Standard deviation : %f seconds\n",calculateSD(timespent));
 
     //parallel woth read write lock
-    for (int i = 0; i < samples; ++i)
+    for (i = 0; i < samples; ++i)
     {
       thread_handles = malloc(threadCount*sizeof(pthread_t));
       if (pthread_rwlock_init(&rwlock, NULL) != 0)
