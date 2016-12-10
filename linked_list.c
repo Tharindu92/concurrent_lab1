@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <time.h>
+#include <math.h>
 #define maximun_num 65535
 
 struct list_node **head_p;
@@ -17,7 +18,8 @@ int delete(int value, struct list_node** head_pp);
 
 int main(){
 	int n,m,samples,i;
-  float mMember,mInsert,mDelete;
+  float mOperations[3];
+  clock_t begin, end;
   printf("Enter the number of samples ");
   scanf("%d",&samples);
 	printf("Enter the initial size of linked list (n) ");
@@ -25,29 +27,71 @@ int main(){
   printf("Enter the number of operations (m) ");
   scanf("%d",&m);
   printf("Fraction of Member operations ");
-  scanf("%f",&mMember);
+  scanf("%f",&mOperations[0]);
   printf("Fraction of Insert operations ");
-  scanf("%f",&mInsert);
+  scanf("%f",&mOperations[1]);
   printf("Fraction of Delete operations ");
-  scanf("%f",&mDelete);
+  scanf("%f",&mOperations[2]);
 
-
+  double time_list[samples];
+  double time_spent, total_time = 0,mean;
 	srand(time(NULL));
   head_p = malloc(sizeof(struct list_node));
   for(i=0; i< samples;i++){
-  	//head_p = malloc(sizeof(struct list_node));
-  	//*head_p = malloc(sizeof(struct list_node));
-  	/*for(i=0; i < n; i++){
-  		num = rand() % 65535;
-  		if(i==0){
-  			(*head_p)->data = num;
-  		}else{
-  			insert(num, head_p);
-  		}
-  	}*/
     populate_linked_list(n,head_p);
-    int cnt = getLinkedList(*head_p);
-    printf("\nCount = %d\n",cnt);
+    begin = clock();
+    opearations(m,mOperations,head_p);
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_list[i] = time_spent;
+    total_time += time_spent;
+  }
+  mean = total_time / samples;
+  calculateSTD(time_list, samples, (mean*mean));
+}
+
+int calculateSTD(double time_list[], int samples, double mean_square){
+  int i;
+  double std=0;
+  for(i=0; i<samples; i++){
+    time_list[i] *= time_list[i];
+    time_list[i] -= mean_square;
+    std += time_list[i];
+  }
+  std = sqrt(std);
+  printf("Average time spent = %f\n",sqrt(mean_square));
+  printf("Standard Deviation = %f\n",std);
+  return 0;
+}
+int opearations(int m, float mOps[3], struct list_node** head_p){
+  int ops[3];
+  int i,num,success;
+  for(i=0; i<3; i++){
+    /*
+      0 - Member
+      1 - Insert
+      2 - Delete
+    */
+    ops[i] = m*mOps[i];  
+  }
+  while(ops[0]!= 0|| ops[1] != 0 || ops[2] != 0){
+    if(ops[0] != 0){
+      num = rand() % maximun_num;
+      member(num, *head_p);
+      ops[0]--;
+    }
+
+    if(ops[1] != 0){
+      num = rand() % maximun_num;
+      insert(num, head_p);
+      ops[1]--;
+    }
+
+    if(ops[2] != 0){
+      num = rand() % maximun_num;
+      delete(num, head_p);
+      ops[2]--;
+    }
   }
 }
 
