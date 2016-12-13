@@ -48,6 +48,7 @@ int main(){
   }
   mean = total_time / samples;
   calculateSTD(time_list, samples, (mean*mean));
+  free(head_p);
 }
 
 int calculateSTD(double time_list[], int samples, double mean_square){
@@ -118,7 +119,7 @@ int getLinkedList(struct list_node* head_p)
   struct list_node* curr_p = head_p;
   int count =0;
   while(curr_p != NULL){
-    printf("%d ",curr_p->data);
+    //printf("%d ",curr_p->data);
     curr_p = curr_p->next;
     ++count;
   }
