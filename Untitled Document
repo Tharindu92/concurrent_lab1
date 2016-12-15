@@ -1,0 +1,127 @@
+[100 * 1.96 * std / (accuracy * mean)]^2
+http://www.cse.wustl.edu/~jain/cse567-08/ftp/k_13cs.pdf
+350
+1000
+10000
+0.9
+0.05
+0.05
+4
+
+350
+1000
+10000
+0.99
+0.005
+0.005
+4
+
+350
+1000
+10000
+0.5
+0.25
+0.25
+2
+
+serial - 0.99 member - samples 25 - needed samples 21
+	mean - 0.019636
+	std - 0.001480
+
+serial - 0.9 member - samples 25 - needed samples 20
+	mean - 0.034167
+	std - 0.001826
+	
+serial - 0.5 member - samples 25 - needed samples 4 
+	mean - 0.070331
+	std - 0.008424
+
+mutex - 0.99 member - samples 25 - needed samples 6
+	threads - 1	
+	mean - 0.025701	
+	std - 0.001067
+
+	0.99 member - samples 25 - needed samples 13
+	threads - 2	
+	mean - 0.088160
+	std - 0.006775
+
+	0.99 member - samples 25 - needed samples 27
+	threads - 4	
+	mean - 0.152245
+	std - 0.030844	
+
+mutex - 0.9 member - samples 25 - needed samples 7
+	threads - 1	
+	mean - 0.040205
+	std - 0.001374
+	
+	0.9 member - samples 25 - needed samples 3
+	threads - 2	
+	mean - 0.122479
+	std - 0.009289
+
+	0.9 member - samples 25 - needed samples 117
+	threads - 4	
+	mean - 0.219762
+	std - 0.059438
+	
+mutex - 0.5 member - samples 25 - needed samples 8
+	threads - 1	
+	mean - 0.075251
+	std - 0.001435
+	
+	0.5 member - samples 25 - needed samples 10
+	threads - 2	
+	mean - 0.176952
+	std - 0.032247
+
+	0.5 member - samples 25 - needed samples 220
+	threads - 4	
+	mean - 0.362530
+	std - 0.129127
+
+rwlock - 0.99 member - samples 25 - needed samples 18
+	threads - 1	
+	mean - 0.025581
+	std - 0.001258
+
+	0.99 member - samples 25 - needed samples 50
+	threads - 2	
+	mean - 0.029498
+	std - 0.004774
+
+	0.99 member - samples 25 - needed samples 225
+	threads - 4	
+	mean - 0.042053
+	std - 0.015526		
+
+rwlock - 0.9 member - samples 25 - needed samples 26
+	threads - 1	
+	mean - 0.040211
+	std - 0.001398
+	
+	0.9 member - samples 25 - needed samples 29
+	threads - 2	
+	mean - 0.052753
+	std - 0.005667
+
+	0.9 member - samples 25 - needed samples 218
+	threads - 4	
+	mean - 0.077019
+	std - 0.025825
+	
+rwlock - 0.5 member - samples 25 - needed samples 2
+	threads - 1	
+	mean - 0.075293
+	std - 0.001544
+	
+	0.5 member - samples 25 - needed samples 38
+	threads - 2	
+	mean - 0.153908
+	std - 0.026641
+
+	0.5 member - samples 25 - needed samples 320
+	threads - 4	
+	mean - 0.319878
+	std - 0.148641
