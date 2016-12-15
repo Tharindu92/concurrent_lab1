@@ -17,51 +17,59 @@ int insert(int value, struct list_node** head_pp);
 int delete(int value, struct list_node** head_pp);
 
 int main(){
-	int n,m,samples,i;
-  float mOperations[3];
-  clock_t begin, end;
-  printf("Enter the number of samples ");
-  scanf("%d",&samples);
-	printf("Enter the initial size of linked list (n) ");
-	scanf("%d",&n);
-  printf("Enter the number of operations (m) ");
-  scanf("%d",&m);
-  printf("Fraction of Member operations ");
-  scanf("%f",&mOperations[0]);
-  printf("Fraction of Insert operations ");
-  scanf("%f",&mOperations[1]);
-  printf("Fraction of Delete operations ");
-  scanf("%f",&mOperations[2]);
+	while(1){
+    int n,m,samples,i;
+    float mOperations[3];
+    clock_t begin, end;
+    printf("Enter the number of samples ");
+    scanf("%d",&samples);
+  	printf("Enter the initial size of linked list (n) ");
+  	scanf("%d",&n);
+    printf("Enter the number of operations (m) ");
+    scanf("%d",&m);
+    printf("Fraction of Member operations ");
+    scanf("%f",&mOperations[0]);
+    printf("Fraction of Insert operations ");
+    scanf("%f",&mOperations[1]);
+    printf("Fraction of Delete operations ");
+    scanf("%f",&mOperations[2]);
 
-  double time_list[samples];
-  double time_spent, total_time = 0,mean;
-	srand(time(NULL));
-  head_p = malloc(sizeof(struct list_node));
-  for(i=0; i< samples;i++){
-    populate_linked_list(n,head_p);
-    begin = clock();
-    opearations(m,mOperations,head_p);
-    end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    time_list[i] = time_spent;
-    total_time += time_spent;
+    double time_list[samples];
+    double time_spent, total_time = 0,mean;
+  	srand(time(NULL));
+    for(i=0; i< samples;i++){
+      head_p = malloc(sizeof(struct list_node));
+      populate_linked_list(n,head_p);
+      begin = clock();
+      opearations(m,mOperations,head_p);
+      end = clock();
+      time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      time_list[i] = time_spent;
+      total_time += time_spent;
+      free(head_p);
+    }
+    mean = total_time / samples;
+    calculateSTD(time_list, samples, mean);
   }
-  mean = total_time / samples;
-  calculateSTD(time_list, samples, (mean*mean));
-  free(head_p);
 }
 
-int calculateSTD(double time_list[], int samples, double mean_square){
+int calculateSTD(double time_list[], int samples, double mean){
   int i;
-  double std=0;
+  float std=0;
+  float temp=0.0;
+  float min_samples;
   for(i=0; i<samples; i++){
-    time_list[i] *= time_list[i];
-    time_list[i] -= mean_square;
-    std += time_list[i];
+    time_list[i] -= mean;
+    temp = time_list[i]*time_list[i];
+    std += temp;
   }
+  std = std/samples;
   std = sqrt(std);
-  printf("Average time spent = %f\n",sqrt(mean_square));
-  printf("Standard Deviation = %f\n",std);
+  min_samples = pow((100*1.96*std)/(5*mean),2);
+  printf("Average time spent = %f\n",mean);
+  printf("Standard Deviation = %f\n",(std));
+  printf("Minimum samples need = %f\n", min_samples);
+
   return 0;
 }
 int opearations(int m, float mOps[3], struct list_node** head_p){

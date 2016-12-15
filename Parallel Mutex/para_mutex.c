@@ -27,62 +27,64 @@ int delete(int value, struct list_node** head_pp);
 void *callOperations(void *arguments);
 int insed = 0;
 int main(){
-  int n,m,samples,i,threads,thread_count;
-  float mOperations[3];
-  clock_t begin, end;
-  pthread_t* thread_handles;
-  printf("Enter the number of samples ");
-  scanf("%d",&samples);
-  printf("Enter the initial size of linked list (n) ");
-  scanf("%d",&n);
-  printf("Enter the number of operations (m) ");
-  scanf("%d",&m);
-  printf("Fraction of Member operations ");
-  scanf("%f",&mOperations[0]);
-  printf("Fraction of Insert operations ");
-  scanf("%f",&mOperations[1]);
-  printf("Fraction of Delete operations ");
-  scanf("%f",&mOperations[2]);
-  printf("Enter the number of threads ");
-  scanf("%d",&threads);
+  while(1){
+    int n,m,samples,i,threads,thread_count;
+    float mOperations[3];
+    clock_t begin, end;
+    pthread_t* thread_handles;
+    printf("Enter the number of samples ");
+    scanf("%d",&samples);
+    printf("Enter the initial size of linked list (n) ");
+    scanf("%d",&n);
+    printf("Enter the number of operations (m) ");
+    scanf("%d",&m);
+    printf("Fraction of Member operations ");
+    scanf("%f",&mOperations[0]);
+    printf("Fraction of Insert operations ");
+    scanf("%f",&mOperations[1]);
+    printf("Fraction of Delete operations ");
+    scanf("%f",&mOperations[2]);
+    printf("Enter the number of threads ");
+    scanf("%d",&threads);
 
-  double time_list[samples];
-  double time_spent, total_time = 0,mean;
-  srand(time(NULL));
-  
-  //arguments = malloc(sizeof(struct argument_list));
+    double time_list[samples];
+    double time_spent, total_time = 0,mean;
+    srand(time(NULL));
+    
+    //arguments = malloc(sizeof(struct argument_list));
 
-  if (pthread_mutex_init(&lock, NULL) != 0)
-  {
-    printf("\n mutex init failed\n");
-    return 1;
+    if (pthread_mutex_init(&lock, NULL) != 0)
+    {
+      printf("\n mutex init failed\n");
+      return 1;
+    }
+
+    for(i=0; i< samples;i++){ 
+      head_p = NULL;
+      head_p = malloc( sizeof(struct list_node));
+      populate_linked_list(n,head_p);
+      setArguments(m,mOperations,head_p,threads);
+      thread_handles = malloc(threads*sizeof(pthread_t));
+      begin = clock();
+      for(thread_count=0; thread_count < threads; thread_count++){  
+        pthread_create(&thread_handles[thread_count], NULL, callOperations, (void*) &arguments);
+      }
+
+      for(thread_count=0; thread_count < threads; thread_count++){
+        pthread_join(thread_handles[thread_count], NULL);
+      }
+      end = clock();
+      time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      time_list[i] = time_spent;
+      total_time += time_spent; 
+      free(thread_handles);
+      free(head_p);
+    } 
+    //free(arguments);
+    mean = total_time / samples;
+    calculateSTD(time_list, samples, mean);
+    pthread_mutex_destroy(&lock);
   }
-
-  for(i=0; i< samples;i++){ 
-    head_p = NULL;
-    head_p = malloc( sizeof(struct list_node));
-    populate_linked_list(n,head_p);
-    setArguments(m,mOperations,head_p,threads);
-    thread_handles = malloc(threads*sizeof(pthread_t));
-    begin = clock();
-    for(thread_count=0; thread_count < threads; thread_count++){  
-      pthread_create(&thread_handles[thread_count], NULL, callOperations, (void*) &arguments);
-    }
-
-    for(thread_count=0; thread_count < threads; thread_count++){
-      pthread_join(thread_handles[thread_count], NULL);
-    }
-    end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    time_list[i] = time_spent;
-    total_time += time_spent; 
-    free(thread_handles);
-    free(head_p);
-  } 
-  //free(arguments);
-  mean = total_time / samples;
-  calculateSTD(time_list, samples, (mean*mean));
-  pthread_mutex_destroy(&lock);
 }
 
 int setArguments(int m, float mOps[3], struct list_node** head_p, int threads){
@@ -111,20 +113,25 @@ void *callOperations(void *arguments)
     opearations(m,mOps,head_p,threads);
 }
 
-int calculateSTD(double time_list[], int samples, double mean_square){
+int calculateSTD(double time_list[], int samples, double mean){
   int i;
-  double std=0;
+  float std=0;
+  float temp=0.0;
+  float min_samples;
   for(i=0; i<samples; i++){
-    time_list[i] *= time_list[i];
-    time_list[i] -= mean_square;
-    std += time_list[i];
+    time_list[i] -= mean;
+    temp = time_list[i]*time_list[i];
+    std += temp;
   }
+  std = std/samples;
   std = sqrt(std);
-  printf("Average time spent = %f\n",sqrt(mean_square));
-  printf("Standard Deviation = %f\n",std);
+  min_samples = pow((100*1.96*std)/(5*mean),2);
+  printf("Average time spent = %f\n",mean);
+  printf("Standard Deviation = %f\n",(std));
+  printf("Minimum samples need = %f\n", min_samples);
+
   return 0;
 }
-
 int opearations(int m, float mOps[3], struct list_node** head_p, int threads){
   int ops[3];
   int i,num,success;
