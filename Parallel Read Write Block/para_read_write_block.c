@@ -128,7 +128,7 @@ int calculateSTD(double time_list[], int samples, double mean){
   min_samples = pow((100*1.96*std)/(5*mean),2);
   printf("Average time spent = %f\n",mean);
   printf("Standard Deviation = %f\n",(std));
-  printf("Minimum samples need = %f\n", min_samples);
+  //printf("Minimum samples need = %f\n", min_samples);
 
   return 0;
 }

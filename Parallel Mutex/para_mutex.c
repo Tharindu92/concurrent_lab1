@@ -128,15 +128,13 @@ int calculateSTD(double time_list[], int samples, double mean){
   min_samples = pow((100*1.96*std)/(5*mean),2);
   printf("Average time spent = %f\n",mean);
   printf("Standard Deviation = %f\n",(std));
-  printf("Minimum samples need = %f\n", min_samples);
+  //printf("Minimum samples need = %f\n", min_samples);
 
   return 0;
 }
 int opearations(int m, float mOps[3], struct list_node** head_p, int threads){
   int ops[3];
   int i,num,success;
-  //printf("m = %d\n",m);
-  //printf("mOps = %f %f %f\n",mOps[0],mOps[1],mOps[2]);
   for(i=0; i<3; i++){
     /*
       0 - Member
@@ -145,7 +143,7 @@ int opearations(int m, float mOps[3], struct list_node** head_p, int threads){
     */
     ops[i] = m*mOps[i]/threads;
   }
-    //printf("Insert %d\n %f",ops[2],mOps[2]);
+
   while(ops[0]!= 0|| ops[1] != 0 || ops[2] != 0){
     if(ops[0] != 0){
       num = rand() % maximun_num;
